@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://startup4nation-backend-1.onrender.com";
 
 export async function loginUser(email, password) {
   const response = await fetch(`${API_URL}/auth/login`, {
