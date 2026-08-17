@@ -1,5 +1,5 @@
 import React from "react";
-import { loginUser, joinEvent, updateProfile as updateProfileAPI } from "./api";
+import { loginUser, joinEvent, updateProfile as updateProfileAPI, registerUser } from "./api";
 import { createRoot } from "react-dom/client";
 import {
   ArrowLeft,
@@ -511,54 +511,29 @@ function Auth({ onLogin }) {
   const [loading, setLoading] = React.useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      if (isLogin) {
-        const data = await loginUser(email, password);
-
-        console.log("Login successful:", data);
-
-        alert("Login successful!");
-
-        onLogin();
-      } else {
-        const response = await fetch(
-          "http://127.0.0.1:8000/auth/register",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name,
-              email,
-              password,
-            }),
-          }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(
-            data.detail || "Registration failed"
-          );
-        }
-
-        alert("Registration successful! Please login.");
-
-        setIsLogin(true);
-        setPassword("");
-      }
-    } catch (error) {
-      alert(error.message);
-    } finally {
-      setLoading(false);
+    if (isLogin) {
+      const data = await loginUser(email, password);
+      console.log("Login successful:", data);
+      alert("Login successful!");
+      onLogin();
+    } else {
+      await registerUser(name, email, password);
+      alert("Registration successful! Please login.");
+      setIsLogin(true);
+      setPassword("");
     }
-  };
+  } catch (error) {
+    alert(error.message);
+  } finally {
+    setLoading(false);
+  }
+};
+        
 
   return (
     <section className="profile-page">
